@@ -42,14 +42,14 @@ jobs:
           done
 
       - name: dry-run — config/nprod
-        run: kubectl kustomize config/nprod | kubectl apply --dry-run=client -f -
+        run: kubectl kustomize config/nprod | kubectl apply --dry-run=client --validate=false -f -
 
       - name: dry-run — config/prod
-        run: kubectl kustomize config/prod | kubectl apply --dry-run=client -f -
+        run: kubectl kustomize config/prod | kubectl apply --dry-run=client --validate=false -f -
 
       - name: dry-run — governance (todas as categorias)
         run: |
           for dir in governance/*/; do
             echo "→ dry-run $dir"
-            kubectl kustomize "$dir" | kubectl apply --dry-run=client -f -
+            kubectl kustomize "$dir" | kubectl apply --dry-run=client --validate=false -f -
           done

@@ -19,4 +19,4 @@ spec:
     automated:
       prune: false      # deleções de recursos OCM exigem confirmação manual (Sync + Prune na UI)
       selfHeal: true
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]
