@@ -1,55 +1,77 @@
 # ============================================================
-# OCM POLICY APPS
-# Destino: Hub (kubernetes.default.svc)
-# Cada app gerencia políticas em seu próprio namespace no Hub,
-# garantindo isolamento total e evitando conflitos no ArgoCD.
+# OCM INFRA APPS (Placements and Namespaces)
 # ============================================================
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ocm-policies-nprod
+  name: ocm-infra-nprod
   namespace: argocd
-  labels:
-    type: ocm-policy
-    environment: nprod
 spec:
   project: default
   source:
     repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
     targetRevision: main
-    path: ocm-policies/overlays/nprod
+    path: ocm-policies/infra/nprod
   destination:
     server: https://kubernetes.default.svc
     namespace: ocm-policies-nprod
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=true
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ocm-policies-prod
+  name: ocm-infra-prod
   namespace: argocd
-  labels:
-    type: ocm-policy
-    environment: prod
 spec:
   project: default
   source:
     repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
     targetRevision: main
-    path: ocm-policies/overlays/prod
+    path: ocm-policies/infra/prod
   destination:
     server: https://kubernetes.default.svc
     namespace: ocm-policies-prod
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=true
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+---
+# ============================================================
+# OCM GOVERNANCE: PLATFORM
+# ============================================================
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ocm-policies-platform-nprod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
+    targetRevision: main
+    path: ocm-policies/governance/platform/overlays/nprod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ocm-policies-nprod
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ocm-policies-platform-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
+    targetRevision: main
+    path: ocm-policies/governance/platform/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ocm-policies-prod
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

@@ -1,11 +1,11 @@
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: placement-nprod
-  namespace: open-cluster-management
+  name: shared-placement-prod
+  namespace: ocm-policies-prod
 spec:
   predicates:
     - requiredClusterSelector:
         labelSelector:
           matchLabels:
-            env: nprod
+            env: prod
