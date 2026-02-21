@@ -20,4 +20,4 @@ jobs:
         run: pip install yamllint
 
       - name: Lint
-        run: yamllint -c .yamllint.yaml .
+        run: yamllint -c .github/yamllint.yaml .
