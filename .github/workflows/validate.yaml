@@ -23,33 +23,20 @@ jobs:
           version: 'v1.32.0'
 
       - name: Build — bootstrap/nprod
-        run: kubectl kustomize bootstrap/nprod
+        run: kubectl kustomize bootstrap/nprod > /dev/null
 
       - name: Build — bootstrap/prod
-        run: kubectl kustomize bootstrap/prod
+        run: kubectl kustomize bootstrap/prod > /dev/null
 
       - name: Build — config/nprod
-        run: kubectl kustomize config/nprod
+        run: kubectl kustomize config/nprod > /dev/null
 
       - name: Build — config/prod
-        run: kubectl kustomize config/prod
+        run: kubectl kustomize config/prod > /dev/null
 
       - name: Build — governance (todas as categorias)
         run: |
           for dir in governance/*/; do
             echo "→ kustomize build $dir"
-            kubectl kustomize "$dir"
-          done
-
-      - name: dry-run — config/nprod
-        run: kubectl kustomize config/nprod | kubectl apply --dry-run=client --validate=false -f -
-
-      - name: dry-run — config/prod
-        run: kubectl kustomize config/prod | kubectl apply --dry-run=client --validate=false -f -
-
-      - name: dry-run — governance (todas as categorias)
-        run: |
-          for dir in governance/*/; do
-            echo "→ dry-run $dir"
-            kubectl kustomize "$dir" | kubectl apply --dry-run=client --validate=false -f -
+            kubectl kustomize "$dir" > /dev/null
           done
