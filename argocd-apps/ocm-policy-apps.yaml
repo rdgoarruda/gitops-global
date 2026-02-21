@@ -1,9 +1,8 @@
 # ============================================================
 # OCM POLICY APPS
 # Destino: Hub (kubernetes.default.svc)
-# O OCM Hub avalia as PlacementRules e distribui as políticas
-# para os clusters worker correspondentes automaticamente.
-# O klusterlet agent em cada worker cluster as executa.
+# Cada app gerencia políticas em seu próprio namespace no Hub,
+# garantindo isolamento total e evitando conflitos no ArgoCD.
 # ============================================================
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -20,9 +19,8 @@ spec:
     targetRevision: main
     path: ocm-policies/overlays/nprod
   destination:
-    # Políticas aplicadas no HUB — OCM distribui para nprod-bu-x via Placement (env=nprod)
     server: https://kubernetes.default.svc
-    namespace: open-cluster-management
+    namespace: ocm-policies-nprod
   syncPolicy:
     automated:
       prune: true
@@ -46,9 +44,8 @@ spec:
     targetRevision: main
     path: ocm-policies/overlays/prod
   destination:
-    # Políticas aplicadas no HUB — OCM distribui para prod-bu-x via Placement (env=prod)
     server: https://kubernetes.default.svc
-    namespace: open-cluster-management
+    namespace: ocm-policies-prod
   syncPolicy:
     automated:
       prune: true
