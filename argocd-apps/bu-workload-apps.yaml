@@ -1,0 +1,59 @@
+# ============================================================
+# BU WORKLOAD APPS
+# Destino: worker clusters diretamente (via ArgoCD cluster secrets)
+# ArgoCD sincroniza o gitops-bu repo e aplica os manifests
+# diretamente em cada cluster worker.
+# Isso é independente do OCM — o ArgoCD gerencia os workloads,
+# o OCM gerencia as políticas de governança.
+# ============================================================
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bu-nprod
+  namespace: argocd
+  labels:
+    type: workload
+    environment: nprod
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/rdgoarruda/gitops-bu.git'
+    targetRevision: main
+    path: overlays/nprod
+  destination:
+    # ArgoCD deploys workloads diretamente em nprod-bu-x
+    server: 'https://172.18.0.6:6443'
+    namespace: apps
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bu-prod
+  namespace: argocd
+  labels:
+    type: workload
+    environment: prod
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/rdgoarruda/gitops-bu.git'
+    targetRevision: main
+    path: overlays/prod
+  destination:
+    # ArgoCD deploys workloads diretamente em prod-bu-x
+    server: 'https://172.18.0.5:6443'
+    namespace: apps
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

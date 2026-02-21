@@ -1,21 +1,28 @@
+# ============================================================
+# OCM POLICY APPS
+# Destino: Hub (kubernetes.default.svc)
+# O OCM Hub avalia as PlacementRules e distribui as políticas
+# para os clusters worker correspondentes automaticamente.
+# O klusterlet agent em cada worker cluster as executa.
+# ============================================================
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: bu-nprod
+  name: ocm-policies-nprod
   namespace: argocd
   labels:
+    type: ocm-policy
     environment: nprod
-    managed-by: gitops-global
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/rdgoarruda/gitops-bu.git'
+    repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
     targetRevision: main
-    path: overlays/nprod
+    path: ocm-policies/overlays/nprod
   destination:
-    # Deploys direto no cluster nprod-bu-x via ArgoCD cluster secret
-    server: 'https://172.18.0.6:6443'
-    namespace: apps
+    # Políticas aplicadas no HUB — OCM distribui para nprod-bu-x via Placement (env=nprod)
+    server: https://kubernetes.default.svc
+    namespace: open-cluster-management
   syncPolicy:
     automated:
       prune: true
@@ -27,21 +34,21 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: bu-prod
+  name: ocm-policies-prod
   namespace: argocd
   labels:
+    type: ocm-policy
     environment: prod
-    managed-by: gitops-global
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/rdgoarruda/gitops-bu.git'
+    repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
     targetRevision: main
-    path: overlays/prod
+    path: ocm-policies/overlays/prod
   destination:
-    # Deploys direto no cluster prod-bu-x via ArgoCD cluster secret
-    server: 'https://172.18.0.5:6443'
-    namespace: apps
+    # Políticas aplicadas no HUB — OCM distribui para prod-bu-x via Placement (env=prod)
+    server: https://kubernetes.default.svc
+    namespace: open-cluster-management
   syncPolicy:
     automated:
       prune: true
