@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ocm-infra
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: nprod
+          - env: prod
+  template:
+    metadata:
+      name: 'ocm-infra-{{env}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
+        targetRevision: main
+        path: 'ocm-policies/infra/{{env}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: 'ocm-policies-{{env}}'
+      syncPolicy:
+        automated: { prune: true, selfHeal: true }
+        syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

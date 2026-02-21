@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bu-workloads
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: nprod
+            cluster_url: 'https://172.18.0.6:6443'
+          - env: prod
+            cluster_url: 'https://172.18.0.5:6443'
+  template:
+    metadata:
+      name: 'bu-workload-{{env}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/rdgoarruda/gitops-bu.git'
+        targetRevision: main
+        path: 'overlays/{{env}}'
+      destination:
+        server: '{{cluster_url}}'
+        namespace: apps
+      syncPolicy:
+        automated: { prune: true, selfHeal: true }
+        syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
