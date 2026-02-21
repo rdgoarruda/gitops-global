@@ -30,12 +30,14 @@ gitops-global/
 ├── bootstrap/                      # 🚀 Ponto de entrada do ArgoCD — App-of-Apps
 │   ├── nprod/
 │   │   ├── root-app.yaml           # Application que aponta para bootstrap/nprod (instalada manualmente 1x)
+│   │   ├── app-ocm-config.yaml     # Application que aponta para config/nprod (domínio OCM)
 │   │   ├── appset-governance.yaml  # ApplicationSet com Git Generator — autodetecta governance/*
-│   │   └── kustomization.yaml      # Inclui appset + config/nprod
+│   │   └── kustomization.yaml      # Inclui app-ocm-config + appset (apenas Applications)
 │   └── prod/
 │       ├── root-app.yaml
+│       ├── app-ocm-config.yaml
 │       ├── appset-governance.yaml
-│       └── kustomization.yaml      # Inclui appset + config/prod
+│       └── kustomization.yaml      # Inclui app-ocm-config + appset (apenas Applications)
 │
 ├── config/                         # ⚙️ Infraestrutura lógica do Hub OCM
 │   ├── nprod/
@@ -167,10 +169,12 @@ Mudanças neste repositório exigem aprovação conforme o `CODEOWNERS`:
 
 | Caminho | Aprovadores | Motivo |
 |---|---|---|
+| `config/prod/**` | `@rdgoarruda` | Produção — controle restrito |
+| `bootstrap/prod/**` | `@rdgoarruda` | Produção — controle restrito |
+| `governance/**` | `@rdgoarruda` | Afeta todos os clusters de todos os ambientes |
+| `config/nprod/**` | `@rdgoarruda` | Não-produção — time de plataforma |
+| `bootstrap/nprod/**` | `@rdgoarruda` | Não-produção — time de plataforma |
 | `docs/**` | `@rdgoarruda` | Decisões arquiteturais — tech lead |
-| `ocm-policies/overlays/prod/**` | `@rdgoarruda` | Produção — controle restrito |
-| `ocm-policies/overlays/nprod/**` | `@rdgoarruda` | Não-produção — time de plataforma |
-| `ocm-policies/base/**` | `@rdgoarruda` | Afeta todos os ambientes |
 
 > Em produção, substitua `@rdgoarruda` pelos grupos reais: `@org/sre-team`, `@org/platform-team`.
 

@@ -1,11 +1,13 @@
-# Políticas de produção — exige aprovação explícita do SRE lead
-ocm-policies/overlays/prod/**    @rdgoarruda
+# Produção — controle restrito (paths reais deste repositório)
+config/prod/**               @rdgoarruda
+bootstrap/prod/**            @rdgoarruda
 
-# Base afeta todos os ambientes
-ocm-policies/base/**             @rdgoarruda
+# Não-produção — time de plataforma
+config/nprod/**              @rdgoarruda
+bootstrap/nprod/**           @rdgoarruda
 
-# ADRs e docs — aprovação do tech lead
-docs/**                          @rdgoarruda
+# Governança — afeta todos os clusters de todos os ambientes
+governance/**                @rdgoarruda
 
-# nprod é mais permissivo — qualquer membro do time de plataforma
-ocm-policies/overlays/nprod/**   @rdgoarruda
+# ADRs e docs — decisões arquiteturais
+docs/**                      @rdgoarruda
