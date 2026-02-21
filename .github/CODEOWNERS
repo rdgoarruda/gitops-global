@@ -1,0 +1,11 @@
+# Políticas de produção — exige aprovação explícita do SRE lead
+ocm-policies/overlays/prod/**    @rdgoarruda
+
+# Base afeta todos os ambientes
+ocm-policies/base/**             @rdgoarruda
+
+# ADRs e docs — aprovação do tech lead
+docs/**                          @rdgoarruda
+
+# nprod é mais permissivo — qualquer membro do time de plataforma
+ocm-policies/overlays/nprod/**   @rdgoarruda

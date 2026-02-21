@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bu-nprod
+  namespace: argocd
+  labels:
+    environment: nprod
+    managed-by: gitops-global
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/rdgoarruda/gitops-bu.git'
+    targetRevision: main
+    path: overlays/nprod
+  destination:
+    # Deploys direto no cluster nprod-bu-x via ArgoCD cluster secret
+    server: 'https://172.18.0.6:6443'
+    namespace: apps
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bu-prod
+  namespace: argocd
+  labels:
+    environment: prod
+    managed-by: gitops-global
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/rdgoarruda/gitops-bu.git'
+    targetRevision: main
+    path: overlays/prod
+  destination:
+    # Deploys direto no cluster prod-bu-x via ArgoCD cluster secret
+    server: 'https://172.18.0.5:6443'
+    namespace: apps
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
