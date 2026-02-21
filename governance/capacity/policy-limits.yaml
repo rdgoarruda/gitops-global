@@ -3,7 +3,7 @@ kind: Policy
 metadata:
   name: policy-capacity-default-limits
 spec:
-  remediationAction: inform
+  remediationAction: enforce
   disabled: false
   policy-templates:
     - objectDefinition:
@@ -12,7 +12,7 @@ spec:
         metadata:
           name: policy-capacity-default-limits
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: medium
           namespaceSelector:
             include: ["default"]
