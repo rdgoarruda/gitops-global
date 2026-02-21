@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: ocm-governance-prod
+  name: governance-prod
   namespace: argocd
 spec:
   generators:
@@ -9,19 +9,19 @@ spec:
         repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
         revision: main
         directories:
-          - path: 'governance/*'
+          - path: governance/*
   template:
     metadata:
       name: 'ocm-policy-{{path.basename}}-prod'
+      labels:
+        category: '{{path.basename}}'
+        environment: prod
     spec:
       project: default
       source:
         repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
         targetRevision: main
         path: '{{path}}'
-        kustomize:
-          commonLabels:
-            environment: prod
       destination:
         server: https://kubernetes.default.svc
         namespace: ocm-policies-prod

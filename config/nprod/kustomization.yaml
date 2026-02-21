@@ -1,5 +1,10 @@
 resources:
   - namespace.yaml
   - placement.yaml
-  - binding-platform.yaml
   - clusterset-binding.yaml
+  - binding-platform.yaml
+  - binding-observability.yaml
+  - binding-capacity.yaml
+  - binding-security.yaml
+  - binding-compliance.yaml
+  - binding-infrastructure.yaml

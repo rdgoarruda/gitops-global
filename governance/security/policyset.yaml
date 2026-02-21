@@ -1,0 +1,8 @@
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: PolicySet
+metadata:
+  name: security
+spec:
+  description: "Políticas de Segurança e Hardening"
+  policies:
+    - policy-security-privileged-denial

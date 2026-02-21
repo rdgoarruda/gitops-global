@@ -1,0 +1,33 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-capacity-default-limits
+spec:
+  remediationAction: inform
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-capacity-default-limits
+        spec:
+          remediationAction: inform
+          severity: medium
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: LimitRange
+                metadata:
+                  name: default-limits
+                  namespace: default
+                spec:
+                  limits:
+                  - default:
+                      cpu: 500m
+                      memory: 512Mi
+                    defaultRequest:
+                      cpu: 100m
+                      memory: 128Mi
+                    type: Container

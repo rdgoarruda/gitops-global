@@ -1,0 +1,8 @@
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: PolicySet
+metadata:
+  name: observability
+spec:
+  description: "Políticas de Observabilidade (Logs, Métricas)"
+  policies:
+    - policy-observability-namespace
