@@ -12,8 +12,11 @@ spec:
         metadata:
           name: policy-security-privileged-denial
         spec:
-          remediationAction: inform
+          remediationAction: inform # Or enforce if desired
           severity: high
+          namespaceSelector:
+            include: ["*"]
+            exclude: ["kube-system", "open-cluster-management*"]
           object-templates:
             - complianceType: mustnothave
               objectDefinition:

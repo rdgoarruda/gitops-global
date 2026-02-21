@@ -14,6 +14,8 @@ spec:
         spec:
           remediationAction: inform
           severity: medium
+          namespaceSelector:
+            include: ["default"]
           object-templates:
             - complianceType: musthave
               objectDefinition:
