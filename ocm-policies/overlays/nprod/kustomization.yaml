@@ -3,7 +3,5 @@ kind: Kustomization
 
 resources:
   - ../../base
-
-# PlacementBinding and PlacementRule para nprod
-- placement.yaml
-- placement-binding.yaml
+  - placement.yaml
+  - placement-binding.yaml
