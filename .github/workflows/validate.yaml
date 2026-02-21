@@ -1,0 +1,55 @@
+name: Validate Kustomize Builds
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'bootstrap/**'
+      - 'config/**'
+      - 'governance/**'
+
+jobs:
+  kustomize-build:
+    name: kustomize build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install kubectl (com kustomize embutido)
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.32.0'
+
+      - name: Build — bootstrap/nprod
+        run: kubectl kustomize bootstrap/nprod
+
+      - name: Build — bootstrap/prod
+        run: kubectl kustomize bootstrap/prod
+
+      - name: Build — config/nprod
+        run: kubectl kustomize config/nprod
+
+      - name: Build — config/prod
+        run: kubectl kustomize config/prod
+
+      - name: Build — governance (todas as categorias)
+        run: |
+          for dir in governance/*/; do
+            echo "→ kustomize build $dir"
+            kubectl kustomize "$dir"
+          done
+
+      - name: dry-run — config/nprod
+        run: kubectl kustomize config/nprod | kubectl apply --dry-run=client -f -
+
+      - name: dry-run — config/prod
+        run: kubectl kustomize config/prod | kubectl apply --dry-run=client -f -
+
+      - name: dry-run — governance (todas as categorias)
+        run: |
+          for dir in governance/*/; do
+            echo "→ dry-run $dir"
+            kubectl kustomize "$dir" | kubectl apply --dry-run=client -f -
+          done

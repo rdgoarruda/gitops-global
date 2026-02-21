@@ -1,0 +1,22 @@
+---
+extends: default
+
+rules:
+  # Linha longa é comum em YAMLs Kubernetes (repoURL, annotations, etc.)
+  line-length:
+    max: 150
+    level: warning
+
+  # Permite comentários inline (usados nas annotations de sync-wave)
+  comments-indentation: disable
+
+  # Permite múltiplos documentos em um arquivo
+  document-start: disable
+
+  # Truthy: permite 'true'/'false' sem aspas (padrão Kubernetes)
+  truthy:
+    allowed-values: ['true', 'false']
+    check-keys: false
+
+ignore: |
+  .git/

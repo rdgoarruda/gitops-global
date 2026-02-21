@@ -1,0 +1,1 @@
+Uma ressalva sobre o dry-run=client: ele valida a estrutura do YAML mas não valida os CRDs customizados do OCM/ArgoCD (que não existem no runner do GitHub). Se quiser validação mais profunda no futuro, o próximo passo seria um runner self-hosted com acesso ao cluster, ou usar kubeconform com schemas dos CRDs. Por ora, o dry-run=client já pega erros de sintaxe e estrutura básica.
