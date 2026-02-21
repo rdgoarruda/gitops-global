@@ -1,33 +1,27 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: ocm-governance
+  name: ocm-governance-prod
   namespace: argocd
 spec:
   generators:
-    - matrix:
-        generators:
-          - list:
-              elements:
-                - env: nprod
-                - env: prod
-          - list:
-              elements:
-                - category: platform
-                - category: security
-                - category: observability
+    - list:
+        elements:
+          - category: platform
+          - category: security
+          - category: observability
   template:
     metadata:
-      name: 'ocm-policy-{{category}}-{{env}}'
+      name: 'ocm-policy-{{category}}-prod'
     spec:
       project: default
       source:
         repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
         targetRevision: main
-        path: 'ocm-policies/governance/{{category}}/overlays/{{env}}'
+        path: 'ocm-policies/governance/{{category}}/overlays/prod'
       destination:
         server: https://kubernetes.default.svc
-        namespace: 'ocm-policies-{{env}}'
+        namespace: ocm-policies-prod
       syncPolicy:
         automated: { prune: true, selfHeal: true }
         syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

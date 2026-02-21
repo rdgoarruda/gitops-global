@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-bootstrap
+  name: root-bootstrap-nprod
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
     targetRevision: main
-    path: argocd-apps
+    path: argocd-apps/nprod
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

@@ -1,26 +1,27 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: ocm-infra
+  name: ocm-governance-nprod
   namespace: argocd
 spec:
   generators:
     - list:
         elements:
-          - env: nprod
-          - env: prod
+          - category: platform
+          - category: security
+          - category: observability
   template:
     metadata:
-      name: 'ocm-infra-{{env}}'
+      name: 'ocm-policy-{{category}}-nprod'
     spec:
       project: default
       source:
         repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
         targetRevision: main
-        path: 'ocm-policies/infra/{{env}}'
+        path: 'ocm-policies/governance/{{category}}/overlays/nprod'
       destination:
         server: https://kubernetes.default.svc
-        namespace: 'ocm-policies-{{env}}'
+        namespace: ocm-policies-nprod
       syncPolicy:
         automated: { prune: true, selfHeal: true }
         syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
