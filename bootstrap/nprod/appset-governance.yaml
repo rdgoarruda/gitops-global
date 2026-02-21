@@ -13,6 +13,8 @@ spec:
   template:
     metadata:
       name: 'ocm-policy-{{path.basename}}-nprod'
+      annotations:
+        argocd.argoproj.io/sync-wave: "0"     # executa após ocm-config-nprod (wave -1)
       labels:
         category: '{{path.basename}}'
         environment: nprod

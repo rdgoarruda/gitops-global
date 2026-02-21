@@ -3,6 +3,9 @@ kind: Application
 metadata:
   name: ocm-config-nprod
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"       # executa antes do ApplicationSet de políticas
+    argocd.argoproj.io/sync-options: "Prune=false"  # root-app nunca deleta esta Application automaticamente
 spec:
   project: default
   source:
@@ -11,7 +14,9 @@ spec:
     path: config/nprod
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: ocm-policies-nprod
   syncPolicy:
-    automated: { prune: true, selfHeal: true }
+    automated:
+      prune: false      # deleções de recursos OCM exigem confirmação manual (Sync + Prune na UI)
+      selfHeal: true
     syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
