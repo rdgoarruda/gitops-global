@@ -1,0 +1,4 @@
+resources:
+  - ../../setup/nprod
+  - ../../governance/platform/argocd-app-nprod.yaml
+  - ../../governance/workloads/argocd-app-nprod.yaml

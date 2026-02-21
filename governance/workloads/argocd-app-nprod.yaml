@@ -3,6 +3,9 @@ kind: Application
 metadata:
   name: bu-workload-nprod
   namespace: argocd
+  labels:
+    category: workloads
+    environment: nprod
 spec:
   project: default
   source:

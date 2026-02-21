@@ -1,14 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ocm-infra-prod
+  name: ocm-policy-platform-prod
   namespace: argocd
+  labels:
+    category: platform
+    environment: prod
 spec:
   project: default
   source:
     repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
     targetRevision: main
-    path: ocm-policies/infra/prod
+    path: governance/platform/overlays/prod
   destination:
     server: https://kubernetes.default.svc
     namespace: ocm-policies-prod

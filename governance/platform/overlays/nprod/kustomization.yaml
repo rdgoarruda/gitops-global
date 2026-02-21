@@ -1,5 +1,4 @@
 namespace: ocm-policies-nprod
-
 resources:
   - ../../base
   - placement-binding.yaml

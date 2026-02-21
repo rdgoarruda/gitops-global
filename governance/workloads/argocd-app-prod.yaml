@@ -1,17 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ocm-infra-nprod
+  name: bu-workload-prod
   namespace: argocd
+  labels:
+    category: workloads
+    environment: prod
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
+    repoURL: 'https://github.com/rdgoarruda/gitops-bu.git'
     targetRevision: main
-    path: ocm-policies/infra/nprod
+    path: overlays/prod
   destination:
-    server: https://kubernetes.default.svc
-    namespace: ocm-policies-nprod
+    server: 'https://172.18.0.5:6443'
+    namespace: apps
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

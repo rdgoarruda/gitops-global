@@ -1,0 +1,4 @@
+resources:
+  - ../../setup/prod
+  - ../../governance/platform/argocd-app-prod.yaml
+  - ../../governance/workloads/argocd-app-prod.yaml

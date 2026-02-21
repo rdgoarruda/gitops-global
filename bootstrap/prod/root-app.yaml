@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
     targetRevision: main
-    path: argocd-apps/prod
+    path: bootstrap/prod
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
