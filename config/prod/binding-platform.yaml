@@ -1,13 +1,13 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: binding-platform-nprod
-  namespace: ocm-policies-nprod
+  name: binding-platform-prod
+  namespace: ocm-policies-prod
 placementRef:
-  name: shared-placement-nprod
+  name: shared-placement-prod
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
-  - name: policy-platform-namespace
+  - name: platform
     apiGroup: policy.open-cluster-management.io
-    kind: Policy
+    kind: PolicySet

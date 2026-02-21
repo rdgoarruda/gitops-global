@@ -1,4 +1,0 @@
-namespace: ocm-policies-prod
-resources:
-  - ../../base
-  - placement-binding.yaml

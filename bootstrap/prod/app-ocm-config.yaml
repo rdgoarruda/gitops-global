@@ -1,20 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: bu-workload-prod
+  name: ocm-config-prod
   namespace: argocd
-  labels:
-    category: workloads
-    environment: prod
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/rdgoarruda/gitops-bu.git'
+    repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
     targetRevision: main
-    path: overlays/prod
+    path: config/prod
   destination:
-    server: 'https://172.18.0.5:6443'
-    namespace: apps
+    server: https://kubernetes.default.svc
+    namespace: argocd
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

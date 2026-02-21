@@ -1,3 +1,4 @@
 resources:
   - namespace.yaml
   - placement.yaml
+  - binding-platform.yaml

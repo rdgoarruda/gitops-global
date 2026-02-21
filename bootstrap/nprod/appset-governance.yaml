@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ocm-governance-nprod
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
+        revision: main
+        directories:
+          - path: 'governance/*'
+  template:
+    metadata:
+      name: 'ocm-policy-{{path.basename}}-nprod'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
+        targetRevision: main
+        path: '{{path}}'
+        kustomize:
+          commonLabels:
+            environment: nprod
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: ocm-policies-nprod
+      syncPolicy:
+        automated: { prune: true, selfHeal: true }
+        syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
