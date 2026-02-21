@@ -2,40 +2,39 @@
 
 Repositório central de governança e infraestrutura multi-cluster.
 
-Este repositório utiliza uma estratégia **GitOps Descentralizada**. Cada categoria de governança ou setup é um módulo autossuficiente, permitindo uma gestão clara e escalável de políticas OCM e configurações de cluster.
+Este repositório utiliza uma estratégia **GitOps com Autodiscovery (ApplicationSets)**. As categorias de governança são módulos autossuportados que o ArgoCD detecta automaticamente, facilitando a expansão da plataforma sem configurações manuais repetitivas.
 
 ## Estrutura do Repositório
 
 ```text
 gitops-global/
 ├── bootstrap/             # 🚀 Ponto de entrada do ArgoCD (App-of-Apps)
-│   ├── nprod/             # Root-App para os ambientes de Não-Produção
-│   └── prod/              # Root-App para os ambientes de Produção
-├── setup/                 # 🏗️ Preparação da Infraestrutura do Hub (OCM)
-│   ├── nprod/             # Namespaces e Placements base para nprod
-│   └── prod/              # Namespaces e Placements base para prod
+│   ├── nprod/             # Root-App e ApplicationSet para Não-Produção
+│   └── prod/              # Root-App e ApplicationSet para Produção
 ├── governance/            # ⚖️ Categorias de Políticas (OCM)
-│   └── platform/          # Políticas de Plataforma base (Namespaces, etc.)
-│       ├── argocd-app-*.yaml # Definição da entrega no ArgoCD
-│       └── policy-*.yaml     # Manifests das políticas OCM
-└── config/                # ⚙️ Configurações Específicas de Ambiente
-    ├── nprod/             # Bindings e ClusterSetBindings vinculando políticas aos clusters
-    └── prod/              # Bindings e ClusterSetBindings vinculando políticas aos clusters
+│   ├── platform/          # Políticas base, RBAC, etc.
+│   ├── security/          # Hardening e Security Standards
+│   ├── observability/     # Agentes de monitoramento e logs
+│   ├── capacity/          # Quotas e limites
+│   └── [categoria]/       # Novas categorias detectadas via Git Discovery
+└── config/                # ⚙️ Configurações de Ambiente (Hub)
+    ├── nprod/             # Namespaces, Placements e Bindings para nprod
+    └── prod/              # Namespaces, Placements e Bindings para prod
 ```
 
 ## Lógica de Funcionamento
 
-1.  **Bootstrap**: O ArgoCD monitora a pasta `bootstrap/<env>`. O `root-app` carrega via Kustomize o `setup` do ambiente e as `Applications` das categorias de governança necessárias.
-2.  **Governance**: Cada subpasta (ex: `platform`) é autossuficiente. Ela contém a política e o objeto `Application` que diz ao ArgoCD como entregá-la.
-3.  **Config**: Contém os `PlacementBinding` e `ManagedClusterSetBinding`. É aqui que decidimos **quais** políticas de qual categoria serão aplicadas em **quais** clusters do ambiente.
+1.  **Bootstrap & Discovery**: O ArgoCD monitora as pastas em `bootstrap/<env>`. O arquivo `appset-governance.yaml` usa um **Git Generator** que varre a pasta `governance/*`. Para cada subpasta encontrada, o ArgoCD cria automaticamente uma `Application`.
+2.  **Governance**: Cada subpasta (ex: `platform`) contém apenas os manifests de `Policy`, `PolicySet` e o `kustomization.yaml`. **Não há necessidade de manifests do ArgoCD aqui**, pois o Discovery as gerencia.
+3.  **Config**: Contém a infraestrutura lógica do Hub. Aqui definimos os `Namespaces` de destino no Hub, os `Placement` (quem recebe) e os `PlacementBinding` (quem liga as políticas aos clusters).
 
 ## Como Adicionar uma Nova Categoria de Governança
 
-1.  Crie uma nova pasta em `governance/<categoria>`.
-2.  Adicione seus manifests de `Policy` e `PolicySet`.
-3.  Crie os manifests de `Application` (ex: `argocd-app-nprod.yaml`) apontando para a pasta da categoria.
-4.  No arquivo `bootstrap/<env>/kustomization.yaml`, adicione o path para o novo `argocd-app-<env>.yaml`.
-5.  Em `config/<env>/`, adicione os `PlacementBinding` especificando quais clusters devem receber essa nova categoria.
+1.  Crie uma nova pasta em `governance/<nova-categoria>`.
+2.  Adicione seus manifests (`policy-*.yaml`, `policyset.yaml`).
+3.  Crie um `kustomization.yaml` na nova pasta listando os recursos.
+4.  **Vinculação**: Em `config/<env>/`, crie um `PlacementBinding` vinculando o novo `PolicySet` ao `Placement` do ambiente e adicione-o ao `kustomization.yaml` local.
+5.  **Pronto!** O ArgoCD detectará a nova pasta automaticamente e o OCM fará a distribuição baseada no binding.
 
 ---
 
@@ -45,3 +44,4 @@ gitops-global/
 - [ADR-002: Branch Única + Overlays](docs/ADR-002-single-branch-environment-per-directory.md)
 - [ADR-003: OCM vs RHACM](docs/ADR-003-ocm-over-rhacm.md)
 - [ADR-004: ArgoCD como Ferramenta de Entrega](docs/ADR-004-argocd-as-delivery-tool.md)
+- [Guia de Categorização](docs/governance-categorization-guide.md)
