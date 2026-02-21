@@ -1,0 +1,2 @@
+# gitops-global
+GERENCIA
