@@ -1,3 +1,3 @@
 resources:
   - policyset.yaml
-  - policy-*.yaml
+  - policy-nist.yaml
