@@ -12,7 +12,7 @@ spec:
         metadata:
           name: policy-security-privileged-denial
         spec:
-          remediationAction: enforce # Or enforce if desired
+          remediationAction: enforce  # Or enforce if desired
           severity: high
           namespaceSelector:
             include: ["*"]

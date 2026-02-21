@@ -28,5 +28,5 @@ spec:
         server: https://kubernetes.default.svc
         namespace: ocm-policies-nprod
       syncPolicy:
-        automated: { prune: true, selfHeal: true }
-        syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+        automated: {prune: true, selfHeal: true}
+        syncOptions: [CreateNamespace=true, ServerSideApply=true]
