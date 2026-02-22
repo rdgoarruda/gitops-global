@@ -3,4 +3,3 @@ kind: Kustomization
 
 resources:
   - appset-tools-nprod.yaml
-  - appset-tools-prod.yaml

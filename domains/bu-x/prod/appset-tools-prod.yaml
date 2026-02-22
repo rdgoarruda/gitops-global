@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: bu-tools-nprod
+  name: bu-tools-prod
   namespace: argocd
 spec:
   generators:
@@ -11,17 +11,17 @@ spec:
               repoURL: 'https://github.com/rdgoarruda/gitops-bu.git'
               revision: main
               directories:
-                - path: tools/*
+                - path: prod/tools/*
           - list:
               elements:
-                - cluster: nprod-bu-x
-                  url: https://172.18.0.6:6443
+                - cluster: prod-bu-x
+                  url: https://172.18.0.7:6443
   template:
     metadata:
-      name: 'bu-tool-{{path.basename}}-nprod'
+      name: 'bu-tool-{{path.basename}}-prod'
       labels:
         domain: bu-x
-        environment: nprod
+        environment: prod
     spec:
       project: default
       source:
