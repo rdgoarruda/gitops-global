@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bu-setup-prod
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: prod-bu-x
+            url: https://172.18.0.7:6443
+  template:
+    metadata:
+      name: 'bu-setup-{{cluster}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/rdgoarruda/gitops-bu.git'
+        targetRevision: main
+        path: setup/overlays/prod
+      destination:
+        server: '{{url}}'
+        namespace: argocd
+      syncPolicy:
+        automated: {prune: true, selfHeal: true}
+        syncOptions: [CreateNamespace=true, ServerSideApply=true]
