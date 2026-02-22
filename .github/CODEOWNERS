@@ -1,13 +1,25 @@
-# Produção — controle restrito (paths reais deste repositório)
+# -------------------------------------------------------
+# CODEOWNERS — gitops-global
+# Apenas @rdgoarruda pode aprovar PRs para a branch main.
+# Requer branch protection rule com "Require CODEOWNERS review".
+# -------------------------------------------------------
+
+# Catch-all: todo arquivo exige aprovação do owner
+*                            @rdgoarruda
+
+# Produção — controle restrito
 config/prod/**               @rdgoarruda
 bootstrap/prod/**            @rdgoarruda
 
-# Não-produção — time de plataforma
+# Não-produção
 config/nprod/**              @rdgoarruda
 bootstrap/nprod/**           @rdgoarruda
 
-# Governança — afeta todos os clusters de todos os ambientes
+# Governança — afeta todos os clusters
 governance/**                @rdgoarruda
 
-# ADRs e docs — decisões arquiteturais
+# Domínios de BU
+domains/**                   @rdgoarruda
+
+# ADRs e docs
 docs/**                      @rdgoarruda
