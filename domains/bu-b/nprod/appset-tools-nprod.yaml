@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bu-tools-nprod-b
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: 'https://github.com/rdgoarruda/gitops-bu-b.git'
+              revision: main
+              directories:
+                - path: nprod/tools/*
+          - list:
+              elements:
+                - cluster: nprod-bu-b
+                  url: https://172.18.0.8:6443
+  template:
+    metadata:
+      name: 'bu-b-tool-{{path.basename}}-nprod'
+      labels:
+        domain: bu-b
+        environment: nprod
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/rdgoarruda/gitops-bu-b.git'
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: '{{url}}'
+        namespace: default
+      syncPolicy:
+        automated: {prune: true, selfHeal: true}
+        syncOptions: [CreateNamespace=true, ServerSideApply=true]

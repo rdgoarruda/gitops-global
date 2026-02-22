@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bu-tools-prod-a
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: 'https://github.com/rdgoarruda/gitops-bu-a.git'
+              revision: main
+              directories:
+                - path: prod/tools/*
+          - list:
+              elements:
+                - cluster: prod-bu-a
+                  url: https://172.18.0.7:6443
+  template:
+    metadata:
+      name: 'bu-a-tool-{{path.basename}}-prod'
+      labels:
+        domain: bu-a
+        environment: prod
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/rdgoarruda/gitops-bu-a.git'
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: '{{url}}'
+        namespace: default
+      syncPolicy:
+        automated: {prune: true, selfHeal: true}
+        syncOptions: [CreateNamespace=true, ServerSideApply=true]
