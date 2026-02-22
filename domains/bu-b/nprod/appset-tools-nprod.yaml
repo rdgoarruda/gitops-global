@@ -15,7 +15,7 @@ spec:
           - list:
               elements:
                 - cluster: nprod-bu-b
-                  url: https://172.18.0.8:6443
+                  url: https://172.18.0.6:6443
   template:
     metadata:
       name: 'bu-b-tool-{{path.basename}}-nprod'
