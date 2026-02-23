@@ -9,7 +9,7 @@ spec:
         repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
         revision: main
         directories:
-          - path: governance/*/overlays/nprod
+          - path: governance/*
   template:
     metadata:
       name: 'ocm-policy-{{path.basename}}-nprod'
@@ -23,7 +23,7 @@ spec:
       source:
         repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
         targetRevision: main
-        path: '{{path}}'
+        path: '{{path}}/overlays/nprod'
       destination:
         server: https://kubernetes.default.svc
         namespace: ocm-policies-nprod
