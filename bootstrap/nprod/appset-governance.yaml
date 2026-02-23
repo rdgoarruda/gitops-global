@@ -9,7 +9,7 @@ spec:
         repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
         revision: main
         directories:
-          - path: governance/*
+          - path: governance/*/overlays/nprod
   template:
     metadata:
       name: 'ocm-policy-{{path.basename}}-nprod'
