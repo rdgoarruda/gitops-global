@@ -16,7 +16,7 @@ spec:
               configMapRef: acm-placement
               labelSelector:
                 matchLabels:
-                  cluster.open-cluster-management.io/placement: shared-placement-pr
+                  cluster.open-cluster-management.io/placement: bu-a-placement-pr
               requeueAfterSeconds: 180
   template:
     metadata:

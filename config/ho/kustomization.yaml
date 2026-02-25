@@ -5,6 +5,9 @@ resources:
   - namespace.yaml
   - clusterset-binding.yaml
   - placement.yaml
+  - bu-a-placement.yaml
+  - bu-b-placement.yaml
+  - acm-placement-configmap.yaml
   - binding-capacity.yaml
   - binding-compliance.yaml
   - binding-infrastructure.yaml
