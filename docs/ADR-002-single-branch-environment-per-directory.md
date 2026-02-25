@@ -8,7 +8,7 @@
 
 ## Contexto
 
-Com múltiplos ambientes (`nprod`, `prod`) sendo gerenciados a partir do mesmo repositório
+Com múltiplos ambientes (`ho`, `pr`) sendo gerenciados a partir do mesmo repositório
 de políticas, precisávamos definir como controlar o que vai para cada ambiente de forma
 segura, auditável e sem introduzir complexidade operacional desnecessária.
 
@@ -26,7 +26,7 @@ que migraram de um workflow de feature branches para múltiplos ambientes).
 main (branch protegida)
 ├── base/                    # Recursos compartilhados
 ├── overlays/
-│   ├── nprod/               # Configurações de não-produção
+│   ├── ho/               # Configurações de homologação
 │   └── prod/                # Configurações de produção (CODEOWNERS restrito)
 └── .github/
     └── CODEOWNERS
@@ -35,18 +35,18 @@ main (branch protegida)
 ### Configuração de CODEOWNERS
 ```
 # Produção exige aprovação explícita do time SRE
-overlays/prod/**        @org/sre-team
+overlays/pr/**        @org/sre-team
 
 # Base afeta todos os ambientes — aprovação ampla
 base/**                 @org/platform-team
 
-# Não-produção — qualquer membro do time de plataforma
-overlays/nprod/**       @org/platform-team
+# Não-prução — qualquer membro do time de plataforma
+overlays/ho/**       @org/platform-team
 ```
 
 ### GitHub Branch Protection Rules (`main`)
 - ✅ Require pull request before merging
-- ✅ Require approvals: mínimo 1 (nprod) / 2 (prod via CODEOWNERS)
+- ✅ Require approvals: mínimo 1 (ho) / 2 (prod via CODEOWNERS)
 - ✅ Require review from CODEOWNERS
 - ✅ Dismiss stale reviews when new commits are pushed
 - ✅ Require status checks (lint, dry-run `kubectl apply --dry-run`)
@@ -57,22 +57,22 @@ overlays/nprod/**       @org/platform-team
 
 **Positivas:**
 - **História linear:** Todo o estado da plataforma está visível numa única branch, sem divergências ou cherrypicks
-- **Promoção explícita:** Ir de nprod para prod exige um segundo PR deliberado — não acontece automaticamente
+- **Promoção explícita:** Ir de ho para prod exige um segundo PR deliberado — não acontece automaticamente
 - **Auditoria por path:** É possível ver exatamente quem aprovou cada mudança em prod via histórico de PR
 - **Sem merge hell:** Não há necessidade de manter branches sincronizadas entre si
 - **Alinhado com GitOps puro:** O estado em `main` é a **fonte de verdade** — o que está no `main` é o que está rodando
 
 **Negativas / Trade-offs aceitos:**
-- Requer disciplina de PR: mudanças em `overlays/prod/` devem ser abertas como PRs separados dos de `overlays/nprod/`
+- Requer disciplina de PR: mudanças em `overlays/pr/` devem ser abertas como PRs separados dos de `overlays/ho/`
 - CODEOWNERS não substitui testes automatizados — recomenda-se adicionar `kubectl apply --dry-run=server` no CI
 
 ---
 
 ## Alternativas Consideradas
 
-### ❌ Multi-branch por ambiente (main, nprod, prod)
+### ❌ Multi-branch por ambiente (main, ho, pr)
 ```
-main → nprod → prod  (promoção via merge/cherry-pick)
+main → ho → prod  (promoção via merge/cherry-pick)
 ```
 
 **Por que descartado:**
@@ -81,7 +81,7 @@ main → nprod → prod  (promoção via merge/cherry-pick)
 - **Histórico confuso:** O log mostra merges entre branches, não mudanças reais de configuração
 - **Rejeição da comunidade:** A comunidade GitOps (Flux, ArgoCD) ativamente desencoraja esse padrão desde 2021
 
-### ❌ Tags por ambiente (v1.0.0-nprod, v1.0.0-prod)
+### ❌ Tags por ambiente (v1.0.0-ho, v1.0.0-pr)
 **Por que descartado:**
 - Útil para bibliotecas/charts, mas inviável para configurações que mudam frequentemente
 - Requer pipeline adicional de tag management

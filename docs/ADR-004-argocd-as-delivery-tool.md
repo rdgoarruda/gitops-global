@@ -12,7 +12,7 @@ A equipe precisava de uma ferramenta GitOps para sincronizar o estado dos reposi
 com os clusters Kubernetes. Os requisitos eram:
 
 1. **Pull-based delivery** — o cluster puxa as mudanças, não o pipeline empurra
-2. **Multi-cluster** — capaz de gerenciar deploys em `nprod-bu-x` e `prod-bu-x` a partir de um ponto central
+2. **Multi-cluster** — capaz de gerenciar deploys em `bu-a-ho` e `bu-a-pr` a partir de um ponto central
 3. **UI visual** — observabilidade do estado de sincronização sem uso de CLI
 4. **Kustomize/Helm nativo** — suporte aos padrões de templating já usados
 5. **Controle de divergência (drift detection)** — alertar se o estado do cluster divergir do repositório
@@ -23,7 +23,7 @@ com os clusters Kubernetes. Os requisitos eram:
 
 **Adotamos o ArgoCD como ferramenta de entrega contínua GitOps.**
 
-ArgoCD roda no cluster de gerenciamento (`gerencia-global`) e é responsável por:
+ArgoCD roda no cluster de gerenciamento (`gerencia-ho`) e é responsável por:
 - Sincronizar os manifestos dos repositórios para os clusters worker
 - Servir como UI de observabilidade do estado da plataforma
 - Ser a "cola" entre o repositório Git e o OCM Hub
@@ -40,7 +40,7 @@ ArgoCD roda no cluster de gerenciamento (`gerencia-global`) e é responsável po
 - **Projeto CNCF Graduated:** Status de maior maturidade no ecossistemas CNCF — usado em produção por Intuit, Red Hat, Tesla, Alibaba
 
 **Negativas / Trade-offs aceitos:**
-- ArgoCD adiciona ~200MB de RAM no cluster Hub — aceitável dado que nosso `gerencia-global` é dedicado à gestão
+- ArgoCD adiciona ~200MB de RAM no cluster Hub — aceitável dado que nosso `gerencia-ho` é dedicado à gestão
 - Requer manutenção de atualização do próprio ArgoCD
 - A UI é somente-leitura para operadores — deploys sempre passam pelo Git
 
@@ -53,15 +53,15 @@ Git Repository (02-platform-policies)
         │
         │  (polling / webhook)
         ▼
-   ArgoCD (em gerencia-global)
+   ArgoCD (em gerencia-ho)
         │
         │  aplica manifests (OCM Policies, PlacementRules)
         ▼
-   OCM Hub (em gerencia-global)
+   OCM Hub (em gerencia-ho)
         │
         │  distribui para clusters selecionados por label
-        ├──▶ nprod-bu-x  (label: env=nprod)
-        └──▶ prod-bu-x   (label: env=prod)
+        ├──▶ bu-a-ho  (label: env=ho)
+        └──▶ bu-a-pr   (label: env=pr)
 ```
 
 ---

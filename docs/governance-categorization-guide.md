@@ -157,16 +157,16 @@ resources:
   - policyset.yaml
 ```
 
-**5. Crie o binding** em `config/nprod/binding-<categoria>.yaml` (se for uma categoria nova):
+**5. Crie o binding** em `config/ho/binding-<categoria>.yaml` (se for uma categoria nova):
 
 ```yaml
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: binding-<categoria>-nprod
-  namespace: ocm-policies-nprod
+  name: binding-<categoria>-ho
+  namespace: ocm-policies-ho
 placementRef:
-  name: shared-placement-nprod
+  name: shared-placement-ho
   apiGroup: cluster.open-cluster-management.io
   kind: Placement
 subjects:
@@ -175,7 +175,7 @@ subjects:
     kind: PolicySet
 ```
 
-**6. Registre o binding** no `config/nprod/kustomization.yaml`.
+**6. Registre o binding** no `config/ho/kustomization.yaml`.
 
 > Se a categoria já existe, os passos 5 e 6 não são necessários — o binding já existe e cobre novas políticas automaticamente via PolicySet.
 
