@@ -2,7 +2,7 @@ apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: bu-a-placement-ho
-  namespace: ocm-policies-ho
+  namespace: argocd
 spec:
   predicates:
     - requiredClusterSelector:
