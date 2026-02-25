@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-pull-integration-ho
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"  # Install before OCM config and ApplicationSets
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/open-cluster-management-io/argocd-pull-integration.git'
+    targetRevision: main
+    path: charts/argocd-pull-integration
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions: 
+      - CreateNamespace=true
+      - ServerSideApply=true

@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - app-ocm-config.yaml
   - appset-governance.yaml
+  - app-argocd-pull-integration.yaml

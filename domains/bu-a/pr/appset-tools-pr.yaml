@@ -12,11 +12,12 @@ spec:
               revision: main
               directories:
                 - path: pr/tools/*
-          - clusters:
-              selector:
+          - clusterDecisionResource:
+              configMapRef: acm-placement
+              labelSelector:
                 matchLabels:
-                  bu: bu-a
-                  env: pr
+                  cluster.open-cluster-management.io/placement: bu-a-placement-pr
+              requeueAfterSeconds: 180
   template:
     metadata:
       name: 'bu-a-tool-{{path.basename}}-pr'
@@ -30,7 +31,7 @@ spec:
         targetRevision: main
         path: '{{path}}'
       destination:
-        server: '{{server}}'
+        server: '{{clusterName}}'
         namespace: default
       syncPolicy:
         automated: {prune: true, selfHeal: true}
