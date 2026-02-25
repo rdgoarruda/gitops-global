@@ -1,0 +1,26 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argocd-placementdecisions-reader
+rules:
+  - apiGroups:
+      - cluster.open-cluster-management.io
+    resources:
+      - placementdecisions
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argocd-placementdecisions-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argocd-placementdecisions-reader
+subjects:
+  - kind: ServiceAccount
+    name: argocd-applicationset-controller
+    namespace: argocd
