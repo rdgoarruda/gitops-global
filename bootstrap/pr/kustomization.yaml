@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - app-ocm-config.yaml
   - appset-governance.yaml
-  - app-argocd-pull-integration.yaml
+  - app-haproxy-bu-a-pr.yaml
+  - app-haproxy-bu-b-pr.yaml
