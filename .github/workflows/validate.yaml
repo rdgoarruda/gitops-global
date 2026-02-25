@@ -22,17 +22,17 @@ jobs:
         with:
           version: 'v1.32.0'
 
-      - name: Build — bootstrap/nprod
-        run: kubectl kustomize bootstrap/nprod > /dev/null
+      - name: Build — bootstrap/ho
+        run: kubectl kustomize bootstrap/ho > /dev/null
 
-      - name: Build — bootstrap/prod
-        run: kubectl kustomize bootstrap/prod > /dev/null
+      - name: Build — bootstrap/pr
+        run: kubectl kustomize bootstrap/pr > /dev/null
 
-      - name: Build — config/nprod
-        run: kubectl kustomize config/nprod > /dev/null
+      - name: Build — config/ho
+        run: kubectl kustomize config/ho > /dev/null
 
-      - name: Build — config/prod
-        run: kubectl kustomize config/prod > /dev/null
+      - name: Build — config/pr
+        run: kubectl kustomize config/pr > /dev/null
 
       - name: Build — governance (todas as categorias)
         run: |

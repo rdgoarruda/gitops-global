@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bu-tools-ho-b
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: 'https://github.com/rdgoarruda/gitops-bu-b.git'
+              revision: main
+              directories:
+                - path: ho/tools/*
+          - clusterDecisionResource:
+              configMapRef: acm-placement
+              labelSelector:
+                matchLabels:
+                  cluster.open-cluster-management.io/placement: shared-placement-ho
+              requeueAfterSeconds: 180
+  template:
+    metadata:
+      name: 'bu-b-tool-{{path.basename}}-ho'
+      labels:
+        domain: bu-b
+        environment: ho
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/rdgoarruda/gitops-bu-b.git'
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: '{{clusterName}}'
+        namespace: default
+      syncPolicy:
+        automated: {prune: true, selfHeal: true}
+        syncOptions: [CreateNamespace=true, ServerSideApply=true]

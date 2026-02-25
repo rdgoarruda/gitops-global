@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: governance-pr
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
+        revision: main
+        directories:
+          - path: governance/*
+  template:
+    metadata:
+      name: 'ocm-policy-{{path.basename}}-pr'
+      annotations:
+        argocd.argoproj.io/sync-wave: "0"
+      labels:
+        category: '{{path.basename}}'
+        environment: pr
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
+        targetRevision: main
+        path: '{{path}}/overlays/pr'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: ocm-policies-pr
+      syncPolicy:
+        automated: {prune: true, selfHeal: true}
+        syncOptions: [CreateNamespace=true, ServerSideApply=true]
