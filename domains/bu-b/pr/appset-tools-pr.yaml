@@ -31,7 +31,7 @@ spec:
         targetRevision: main
         path: '{{path}}'
       destination:
-        server: '{{clusterName}}'
+        name: '{{clusterName}}'
         namespace: default
       syncPolicy:
         automated: {prune: true, selfHeal: true}
