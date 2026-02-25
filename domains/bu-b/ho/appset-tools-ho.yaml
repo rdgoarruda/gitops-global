@@ -12,12 +12,11 @@ spec:
               revision: main
               directories:
                 - path: ho/tools/*
-          - clusterDecisionResource:
-              configMapRef: acm-placement
-              labelSelector:
+          - clusters:
+              selector:
                 matchLabels:
-                  cluster.open-cluster-management.io/placement: bu-b-placement-ho
-              requeueAfterSeconds: 180
+                  bu: bu-b
+                  env: ho
   template:
     metadata:
       name: 'bu-b-tool-{{path.basename}}-ho'
@@ -31,7 +30,7 @@ spec:
         targetRevision: main
         path: '{{path}}'
       destination:
-        server: '{{clusterName}}'
+        server: '{{server}}'
         namespace: default
       syncPolicy:
         automated: {prune: true, selfHeal: true}
