@@ -6,22 +6,66 @@ spec:
   remediationAction: enforce
   disabled: false
   policy-templates:
+    # ── Regra 1: nenhum container com privileged: true ────────────────────
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: policy-security-privileged-denial
+          name: policy-deny-privileged-containers
         spec:
-          remediationAction: enforce  # Or enforce if desired
+          remediationAction: enforce
           severity: high
           namespaceSelector:
             include: ["*"]
-            exclude: ["kube-system", "open-cluster-management*"]
-          object-templates:
+            exclude: ["kube-system", "open-cluster-management*", "haproxy-controller"]
+          object-templates-raw: |
+            {{- range $pod := (lookup "v1" "Pod" "" "").items }}
+            {{- range $container := $pod.spec.containers }}
             - complianceType: mustnothave
               objectDefinition:
                 apiVersion: v1
                 kind: Pod
                 metadata:
-                  annotations:
-                    security.kubernetes.io/enforce: privileged
+                  name: {{ $pod.metadata.name }}
+                  namespace: {{ $pod.metadata.namespace }}
+                spec:
+                  containers:
+                    - name: {{ $container.name }}
+                      securityContext:
+                        privileged: true
+            {{- end }}
+            {{- range $container := $pod.spec.initContainers }}
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                  name: {{ $pod.metadata.name }}
+                  namespace: {{ $pod.metadata.namespace }}
+                spec:
+                  initContainers:
+                    - name: {{ $container.name }}
+                      securityContext:
+                        privileged: true
+            {{- end }}
+            {{- end }}
+    # ── Regra 2: Namespace label enforce de PSS não pode ser privileged ───
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-deny-privileged-pss-label
+        spec:
+          remediationAction: enforce
+          severity: high
+          namespaceSelector:
+            include: ["*"]
+            exclude: ["kube-system", "open-cluster-management*", "haproxy-controller"]
+          object-templates:
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  labels:
+                    pod-security.kubernetes.io/enforce: privileged

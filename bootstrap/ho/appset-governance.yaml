@@ -3,6 +3,8 @@ kind: ApplicationSet
 metadata:
   name: governance-ho
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"     # executa após ocm-config-ho (wave -1)
 spec:
   generators:
     - git:
@@ -13,8 +15,6 @@ spec:
   template:
     metadata:
       name: 'ocm-policy-{{path.basename}}-ho'
-      annotations:
-        argocd.argoproj.io/sync-wave: "0"     # executa após ocm-config-ho (wave -1)
       labels:
         category: '{{path.basename}}'
         environment: ho

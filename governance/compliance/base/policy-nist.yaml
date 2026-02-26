@@ -1,3 +1,5 @@
+# NIST SP 800-190 — Application Container Security Guide
+# Controles: AC-3, AC-6, CM-6, CM-7, SC-28, SI-3
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -6,21 +8,105 @@ spec:
   remediationAction: enforce
   disabled: false
   policy-templates:
+    # ── NIST AC-6 / CM-7: sem hostPID (acesso ao espaço de processo do host) ─
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: policy-compliance-nist-baseline
+          name: policy-nist-deny-host-pid
         spec:
           remediationAction: enforce
           severity: critical
           namespaceSelector:
-            include: ["kube-system"]
-          object-templates:
-            - complianceType: musthave
+            include: ["*"]
+            exclude: ["kube-system", "open-cluster-management*", "haproxy-controller"]
+          object-templates-raw: |
+            {{- range $pod := (lookup "v1" "Pod" "" "").items }}
+            - complianceType: mustnothave
               objectDefinition:
                 apiVersion: v1
-                kind: ConfigMap
+                kind: Pod
                 metadata:
-                  name: nist-baseline-config
-                  namespace: kube-system
+                  name: {{ $pod.metadata.name }}
+                  namespace: {{ $pod.metadata.namespace }}
+                spec:
+                  hostPID: true
+            {{- end }}
+    # ── NIST AC-6 / CM-7: sem hostIPC (acesso ao IPC do host) ─────────────
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-nist-deny-host-ipc
+        spec:
+          remediationAction: enforce
+          severity: critical
+          namespaceSelector:
+            include: ["*"]
+            exclude: ["kube-system", "open-cluster-management*", "haproxy-controller"]
+          object-templates-raw: |
+            {{- range $pod := (lookup "v1" "Pod" "" "").items }}
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                  name: {{ $pod.metadata.name }}
+                  namespace: {{ $pod.metadata.namespace }}
+                spec:
+                  hostIPC: true
+            {{- end }}
+    # ── NIST SC-28 / CM-7: sem hostNetwork (expõe interfaces de rede do host) 
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-nist-deny-host-network
+        spec:
+          remediationAction: enforce
+          severity: critical
+          namespaceSelector:
+            include: ["*"]
+            exclude: ["kube-system", "open-cluster-management*", "haproxy-controller"]
+          object-templates-raw: |
+            {{- range $pod := (lookup "v1" "Pod" "" "").items }}
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                  name: {{ $pod.metadata.name }}
+                  namespace: {{ $pod.metadata.namespace }}
+                spec:
+                  hostNetwork: true
+            {{- end }}
+    # ── NIST CM-6 / SI-3: imagens devem ter tag explícita (sem :latest) ────
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-nist-deny-latest-image
+        spec:
+          remediationAction: inform
+          severity: medium
+          namespaceSelector:
+            include: ["*"]
+            exclude: ["kube-system", "open-cluster-management*"]
+          object-templates-raw: |
+            {{- range $pod := (lookup "v1" "Pod" "" "").items }}
+            {{- range $container := $pod.spec.containers }}
+            {{- if hasSuffix ":latest" $container.image }}
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                  name: {{ $pod.metadata.name }}
+                  namespace: {{ $pod.metadata.namespace }}
+                spec:
+                  containers:
+                    - name: {{ $container.name }}
+                      image: {{ $container.image }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
