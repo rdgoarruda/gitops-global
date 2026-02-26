@@ -28,6 +28,8 @@ spec:
                 useHostPort: true
               config:
                 use-forwarded-headers: "true"
+              service:
+                type: NodePort
       destination:
         name: '{{cluster}}'
         namespace: haproxy-controller
