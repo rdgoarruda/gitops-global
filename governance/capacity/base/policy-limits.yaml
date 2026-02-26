@@ -15,15 +15,14 @@ spec:
           remediationAction: enforce
           severity: medium
           namespaceSelector:
-            include: ["default"]
+            include: ["default", "*-workloads"]
           object-templates:
             - complianceType: musthave
               objectDefinition:
                 apiVersion: v1
                 kind: LimitRange
                 metadata:
-                  name: default-limits
-                  namespace: default
+                  name: workload-limits
                 spec:
                   limits:
                     - default:

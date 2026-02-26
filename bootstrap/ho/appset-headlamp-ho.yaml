@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: headlamp-ingress-ho
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: bu-a-ho
+          - cluster: bu-b-ho
+  template:
+    metadata:
+      name: 'headlamp-ingress-{{cluster}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
+        targetRevision: main
+        path: 'infrastructure/headlamp/overlays/{{cluster}}'
+      destination:
+        name: '{{cluster}}'
+        namespace: headlamp
+      syncPolicy:
+        automated: {prune: true, selfHeal: true}
+        syncOptions: [CreateNamespace=true]

@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: haproxy-ingress-pr
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: bu-a-pr
+          - cluster: bu-b-pr
+  template:
+    metadata:
+      name: 'haproxy-ingress-{{cluster}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://haproxy-ingress.github.io/charts'
+        chart: haproxy-ingress
+        targetRevision: 0.14.7
+        helm:
+          values: |
+            controller:
+              hostNetwork: true
+              daemonset:
+                useHostPort: true
+              config:
+                use-forwarded-headers: "true"
+      destination:
+        name: '{{cluster}}'
+        namespace: haproxy-controller
+      syncPolicy:
+        automated: {prune: true, selfHeal: true}
+        syncOptions: [CreateNamespace=true]

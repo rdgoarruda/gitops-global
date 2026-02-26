@@ -22,5 +22,5 @@ spec:
                 metadata:
                   annotations:
                     storageclass.kubernetes.io/is-default-class: "true"
-                  name: gp2
-                provisioner: kubernetes.io/aws-ebs
+                  name: standard
+                provisioner: rancher.io/local-path

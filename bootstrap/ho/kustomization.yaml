@@ -4,5 +4,5 @@ kind: Kustomization
 resources:
   - app-ocm-config.yaml
   - appset-governance.yaml
-  - app-haproxy-bu-a-ho.yaml
-  - app-haproxy-bu-b-ho.yaml
+  - appset-haproxy-ho.yaml
+  - appset-headlamp-ho.yaml
