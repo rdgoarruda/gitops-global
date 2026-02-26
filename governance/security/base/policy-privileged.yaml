@@ -7,6 +7,8 @@ spec:
   disabled: false
   policy-templates:
     # ── Regra 1: nenhum container com privileged: true ────────────────────
+    # OCM avalia se qualquer Pod em cada namespace possui containers
+    # com o campo privileged: true e o remove (remediationAction: enforce)
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -18,38 +20,37 @@ spec:
           namespaceSelector:
             include: ["*"]
             exclude: ["kube-system", "open-cluster-management*", "haproxy-controller"]
-          object-templates-raw: |
-            {{- range $pod := (lookup "v1" "Pod" "" "").items }}
-            {{- range $container := $pod.spec.containers }}
+          object-templates:
             - complianceType: mustnothave
               objectDefinition:
                 apiVersion: v1
                 kind: Pod
-                metadata:
-                  name: {{ $pod.metadata.name }}
-                  namespace: {{ $pod.metadata.namespace }}
                 spec:
                   containers:
-                    - name: {{ $container.name }}
-                      securityContext:
+                    - securityContext:
                         privileged: true
-            {{- end }}
-            {{- range $container := $pod.spec.initContainers }}
+    # ── Regra 2: mesmo controle para initContainers ─────────────────────
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-deny-privileged-init-containers
+        spec:
+          remediationAction: enforce
+          severity: high
+          namespaceSelector:
+            include: ["*"]
+            exclude: ["kube-system", "open-cluster-management*", "haproxy-controller"]
+          object-templates:
             - complianceType: mustnothave
               objectDefinition:
                 apiVersion: v1
                 kind: Pod
-                metadata:
-                  name: {{ $pod.metadata.name }}
-                  namespace: {{ $pod.metadata.namespace }}
                 spec:
                   initContainers:
-                    - name: {{ $container.name }}
-                      securityContext:
+                    - securityContext:
                         privileged: true
-            {{- end }}
-            {{- end }}
-    # ── Regra 2: Namespace label enforce de PSS não pode ser privileged ───
+    # ── Regra 3: Namespace label enforce de PSS não pode ser privileged ───
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
