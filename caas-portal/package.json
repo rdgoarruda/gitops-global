@@ -42,7 +42,9 @@
   },
   "resolutions": {
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "minimatch": "^10.2.3",
+    "tar": "^7.5.11"
   },
   "prettier": "@backstage/cli/config/prettier",
   "lint-staged": {
