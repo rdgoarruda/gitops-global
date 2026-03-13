@@ -6,3 +6,4 @@ spec:
   description: "Controle de Quotas e Limites"
   policies:
     - policy-capacity-default-limits
+    - policy-capacity-default-quota

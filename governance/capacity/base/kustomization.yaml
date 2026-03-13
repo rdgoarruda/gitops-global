@@ -5,3 +5,4 @@ commonLabels:
 resources:
   - policyset.yaml
   - policy-limits.yaml
+  - policy-quota.yaml
