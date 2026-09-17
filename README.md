@@ -1,8 +1,12 @@
 # gitops-global
 
+> 🎤 **Demo — KCD São Paulo 2026** · *Como governar 200+ políticas mandatórias em centenas de clusters com ArgoCD e OCM*
+
 Repositório central de **governança, políticas e infraestrutura lógica** da plataforma multi-cluster.
 
 Faz parte de uma estratégia de [3 repositórios GitOps](docs/ADR-001-three-repo-gitops-strategy.md), sendo o responsável pela camada de plataforma e segurança — tudo que é mandatório independente de qual aplicação roda no cluster.
+
+> **Nota:** Este é um ambiente de demonstração técnica. O mapeamento entre o lab (6 clusters) e o ambiente real (200+ clusters) está documentado em [ADR-005](docs/ADR-005-kcd-demo-environment.md).
 
 ---
 
@@ -211,3 +215,4 @@ Mudança de política
 | [ADR-002](docs/ADR-002-single-branch-environment-per-directory.md) | Branch Única + Overlays por Ambiente | ✅ Aceito |
 | [ADR-003](docs/ADR-003-ocm-over-rhacm.md) | OCM em vez de RHACM | ✅ Aceito |
 | [ADR-004](docs/ADR-004-argocd-as-delivery-tool.md) | ArgoCD como Ferramenta de Entrega | ✅ Aceito |
+| [ADR-005](docs/ADR-005-kcd-demo-environment.md) | Ambiente de Demo KCD 2026 | ✅ Aceito |
