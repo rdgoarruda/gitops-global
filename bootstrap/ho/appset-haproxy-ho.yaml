@@ -7,13 +7,15 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
   generators:
-    - list:
-        elements:
-          - cluster: bu-a-ho
-          - cluster: bu-b-ho
+    - clusterDecisionResource:
+        configMapRef: acm-placement
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: infra-placement-ho
+        requeueAfterSeconds: 180
   template:
     metadata:
-      name: 'haproxy-ingress-{{cluster}}'
+      name: 'haproxy-ingress-{{clusterName}}'
     spec:
       project: default
       source:
@@ -31,7 +33,7 @@ spec:
               service:
                 type: NodePort
       destination:
-        name: '{{cluster}}'
+        name: '{{clusterName}}'
         namespace: haproxy-controller
       syncPolicy:
         automated: {prune: true, selfHeal: true}

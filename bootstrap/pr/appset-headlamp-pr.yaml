@@ -7,21 +7,23 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
   generators:
-    - list:
-        elements:
-          - cluster: bu-a-pr
-          - cluster: bu-b-pr
+    - clusterDecisionResource:
+        configMapRef: acm-placement
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: infra-placement-pr
+        requeueAfterSeconds: 180
   template:
     metadata:
-      name: 'headlamp-ingress-{{cluster}}'
+      name: 'headlamp-ingress-{{clusterName}}'
     spec:
       project: default
       source:
         repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
         targetRevision: main
-        path: 'infrastructure/headlamp/overlays/{{cluster}}'
+        path: 'infrastructure/headlamp/overlays/{{clusterName}}'
       destination:
-        name: '{{cluster}}'
+        name: '{{clusterName}}'
         namespace: headlamp
       syncPolicy:
         automated: {prune: true, selfHeal: true}
