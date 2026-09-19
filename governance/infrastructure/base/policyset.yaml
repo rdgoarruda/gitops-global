@@ -1,0 +1,9 @@
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: PolicySet
+metadata:
+  name: infrastructure
+spec:
+  description: "Infraestrutura base aplicada a todos os clusters workers"
+  policies:
+    - policy-headlamp-ingress
+    - policy-haproxy-ingress

@@ -3,9 +3,7 @@ kind: PolicySet
 metadata:
   name: security
 spec:
-  description: "Políticas aplicadas a todos os clusters workers — KCD 2026"
+  description: "Políticas de segurança demonstradas no KCD 2026"
   policies:
     - policy-no-privileged-pods
     - policy-restrict-clusteradmin
-    - policy-headlamp-ingress
-    - policy-haproxy-ingress

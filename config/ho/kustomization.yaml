@@ -8,3 +8,4 @@ resources:
   - acm-placement-configmap.yaml
   - argocd-ocm-rbac.yaml
   - binding-security.yaml
+  - binding-infrastructure.yaml

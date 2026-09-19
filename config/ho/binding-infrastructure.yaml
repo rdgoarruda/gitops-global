@@ -1,0 +1,13 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: binding-infrastructure-ho
+  namespace: ocm-policies-ho
+placementRef:
+  name: shared-placement-ho
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: infrastructure
+    apiGroup: policy.open-cluster-management.io
+    kind: PolicySet
