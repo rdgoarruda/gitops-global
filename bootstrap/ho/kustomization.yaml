@@ -6,3 +6,4 @@ resources:
   - appset-governance.yaml
   - placement-infra-ho.yaml
   - appset-headlamp-ho.yaml
+  - clusterset-binding.yaml
