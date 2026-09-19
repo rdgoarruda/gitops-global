@@ -9,8 +9,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
-    targetRevision: main
+    repoURL: "https://github.com/rdgoarruda/gitops-global.git"
+    targetRevision: main-kcd
     path: config/pr
   destination:
     server: https://kubernetes.default.svc
