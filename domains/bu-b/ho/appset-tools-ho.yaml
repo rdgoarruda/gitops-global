@@ -32,7 +32,7 @@ spec:
         path: "{{path}}"
       destination:
         name: "{{clusterName}}"
-        namespace: default
+        namespace: bu-b-workloads
       syncPolicy:
         automated: { prune: true, selfHeal: true }
         syncOptions: [CreateNamespace=true, ServerSideApply=true]
