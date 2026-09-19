@@ -35,6 +35,9 @@ spec:
                 hostPorts:
                   http: 80
                   https: 443
+              containerPort:
+                http: 80
+                https: 443
               dnsPolicy: ClusterFirstWithHostNet
               service:
                 enabled: false
