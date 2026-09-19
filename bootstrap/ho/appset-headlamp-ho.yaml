@@ -22,7 +22,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: "https://headlamp-k8s.github.io/headlamp"
+        repoURL: "https://kubernetes-sigs.github.io/headlamp/"
         chart: headlamp
         targetRevision: "0.26.0"
         helm:
