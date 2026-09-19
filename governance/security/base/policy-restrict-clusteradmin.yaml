@@ -1,0 +1,34 @@
+# ATO 1 — Alguém tenta virar admin do cluster
+# Detecta ClusterRoleBindings apontando para cluster-admin criados fora do sistema
+# e os remove automaticamente (remediationAction: enforce)
+# Filtros: preserva bindings do sistema (system:*, cluster-admin, kubeadm:cluster-admins)
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-restrict-clusteradmin
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-restrict-clusteradmin
+        spec:
+          remediationAction: enforce
+          severity: critical
+          object-templates-raw: |
+            {{- range $crb := (lookup "rbac.authorization.k8s.io/v1" "ClusterRoleBinding" "" "").items }}
+            {{- if and (eq $crb.roleRef.name "cluster-admin")
+                       (not (hasPrefix "system:" $crb.metadata.name))
+                       (ne $crb.metadata.name "cluster-admin")
+                       (ne $crb.metadata.name "kubeadm:cluster-admins") }}
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: rbac.authorization.k8s.io/v1
+                kind: ClusterRoleBinding
+                metadata:
+                  name: {{ $crb.metadata.name }}
+            {{- end }}
+            {{- end }}

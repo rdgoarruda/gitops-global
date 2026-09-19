@@ -1,0 +1,34 @@
+# ATO 2 — Container com acesso total ao nó
+# Bloqueia qualquer Pod rodando com securityContext.privileged: true
+# remediationAction: enforce → o agente corrige sozinho, sem intervenção humana
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-no-privileged-pods
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-no-privileged-pods
+        spec:
+          remediationAction: enforce
+          severity: high
+          namespaceSelector:
+            include: ["*"]
+            exclude:
+              - kube-system
+              - open-cluster-management*
+              - haproxy-controller
+          object-templates:
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                    - securityContext:
+                        privileged: true
