@@ -3,6 +3,5 @@ kind: PolicySet
 metadata:
   name: infrastructure
 spec:
-  description: "Gestão de Ciclo de Vida de Infra"
-  policies:
-    - policy-infra-storage-class
+  description: "Infraestrutura base aplicada a todos os clusters workers"
+  policies: []

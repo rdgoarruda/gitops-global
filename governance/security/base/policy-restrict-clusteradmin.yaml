@@ -1,0 +1,45 @@
+# ATO 1 — Alguém tenta virar admin do cluster
+# Detecta ClusterRoleBindings apontando para cluster-admin criados fora do sistema
+# e os remove automaticamente (remediationAction: enforce)
+# Filtros: preserva bindings do sistema (system:*, cluster-admin, kubeadm:cluster-admins)
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-restrict-clusteradmin
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-restrict-clusteradmin
+        spec:
+          remediationAction: enforce
+          severity: critical
+          object-templates-raw: |
+            {{- range $crb := (lookup "rbac.authorization.k8s.io/v1" "ClusterRoleBinding" "" "").items }}
+            {{- $isAllowed := false }}
+            {{- if or (hasPrefix "system:" $crb.metadata.name) (eq $crb.metadata.name "cluster-admin") (eq $crb.metadata.name "kubeadm:cluster-admins") }}
+              {{- $isAllowed = true }}
+            {{- else if eq $crb.metadata.name (printf "headlamp-%s-admin" .ManagedClusterName) }}
+              {{- $isAllowed = true }}
+              {{- range $subj := $crb.subjects }}
+                {{- if or (ne $subj.kind "ServiceAccount") (ne $subj.namespace "headlamp") (ne $subj.name (printf "headlamp-%s" $.ManagedClusterName)) }}
+                  {{- $isAllowed = false }}
+                {{- end }}
+              {{- end }}
+              {{- if ne (len $crb.subjects) 1 }}
+                {{- $isAllowed = false }}
+              {{- end }}
+            {{- end }}
+            {{- if and (eq $crb.roleRef.name "cluster-admin") (not $isAllowed) }}
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: rbac.authorization.k8s.io/v1
+                kind: ClusterRoleBinding
+                metadata:
+                  name: {{ $crb.metadata.name }}
+            {{- end }}
+            {{- end }}

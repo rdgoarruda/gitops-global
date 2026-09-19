@@ -8,8 +8,8 @@ spec:
     - matrix:
         generators:
           - git:
-              repoURL: 'https://github.com/rdgoarruda/gitops-bu-a.git'
-              revision: main
+              repoURL: "https://github.com/rdgoarruda/gitops-bu-a.git"
+              revision: main-kcd
               directories:
                 - path: ho/tools/*
           - clusterDecisionResource:
@@ -20,19 +20,19 @@ spec:
               requeueAfterSeconds: 180
   template:
     metadata:
-      name: 'bu-a-tool-{{path.basename}}-ho'
+      name: "bu-a-tool-{{path.basename}}-ho"
       labels:
         domain: bu-a
         environment: ho
     spec:
       project: default
       source:
-        repoURL: 'https://github.com/rdgoarruda/gitops-bu-a.git'
-        targetRevision: main
-        path: '{{path}}'
+        repoURL: "https://github.com/rdgoarruda/gitops-bu-a.git"
+        targetRevision: main-kcd
+        path: "{{path}}"
       destination:
-        name: '{{clusterName}}'
-        namespace: default
+        name: "{{clusterName}}"
+        namespace: "bu-a-{{path.basename}}"
       syncPolicy:
-        automated: {prune: true, selfHeal: true}
+        automated: { prune: true, selfHeal: true }
         syncOptions: [CreateNamespace=true, ServerSideApply=true]

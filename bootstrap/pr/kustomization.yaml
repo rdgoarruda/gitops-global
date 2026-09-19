@@ -4,5 +4,7 @@ kind: Kustomization
 resources:
   - app-ocm-config.yaml
   - appset-governance.yaml
-  - appset-haproxy-pr.yaml
+  - placement-infra-pr.yaml
   - appset-headlamp-pr.yaml
+  - appset-haproxy-pr.yaml
+  - clusterset-binding.yaml

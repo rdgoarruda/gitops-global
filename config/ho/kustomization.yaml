@@ -7,9 +7,5 @@ resources:
   - placement.yaml
   - acm-placement-configmap.yaml
   - argocd-ocm-rbac.yaml
-  - binding-capacity.yaml
-  - binding-compliance.yaml
-  - binding-infrastructure.yaml
-  - binding-observability.yaml
-  - binding-platform.yaml
   - binding-security.yaml
+  - binding-infrastructure.yaml

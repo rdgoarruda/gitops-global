@@ -3,6 +3,7 @@ kind: PolicySet
 metadata:
   name: security
 spec:
-  description: "Políticas de Segurança e Hardening"
+  description: "Políticas de segurança demonstradas no KCD 2026"
   policies:
-    - policy-security-privileged-denial
+    - policy-no-privileged-pods
+    - policy-restrict-clusteradmin

@@ -4,29 +4,29 @@ metadata:
   name: governance-ho
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"     # executa após ocm-config-ho (wave -1)
+    argocd.argoproj.io/sync-wave: "0" # executa após ocm-config-ho (wave -1)
 spec:
   generators:
     - git:
-        repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
-        revision: main
+        repoURL: "https://github.com/rdgoarruda/gitops-global.git"
+        revision: main-kcd
         directories:
           - path: governance/*
   template:
     metadata:
-      name: 'ocm-policy-{{path.basename}}-ho'
+      name: "ocm-policy-{{path.basename}}-ho"
       labels:
-        category: '{{path.basename}}'
+        category: "{{path.basename}}"
         environment: ho
     spec:
       project: default
       source:
-        repoURL: 'https://github.com/rdgoarruda/gitops-global.git'
-        targetRevision: main
-        path: '{{path}}/overlays/ho'
+        repoURL: "https://github.com/rdgoarruda/gitops-global.git"
+        targetRevision: main-kcd
+        path: "{{path}}/overlays/ho"
       destination:
         server: https://kubernetes.default.svc
         namespace: ocm-policies-ho
       syncPolicy:
-        automated: {prune: true, selfHeal: true}
+        automated: { prune: true, selfHeal: true }
         syncOptions: [CreateNamespace=true, ServerSideApply=true]

@@ -1,38 +1,47 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: haproxy-ingress-pr
+  name: haproxy-pr
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   generators:
-    - list:
-        elements:
-          - cluster: bu-a-pr
-          - cluster: bu-b-pr
+    - clusterDecisionResource:
+        configMapRef: acm-placement
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: infra-placement-pr
+        requeueAfterSeconds: 180
   template:
     metadata:
-      name: 'haproxy-ingress-{{cluster}}'
+      name: "haproxy-{{clusterName}}"
+      labels:
+        component: haproxy
+        environment: pr
     spec:
       project: default
       source:
-        repoURL: 'https://haproxy-ingress.github.io/charts'
-        chart: haproxy-ingress
-        targetRevision: 0.14.7
+        repoURL: "https://haproxytech.github.io/helm-charts"
+        chart: kubernetes-ingress
+        targetRevision: "1.40.1"
         helm:
           values: |
             controller:
-              hostNetwork: true
+              kind: DaemonSet
               daemonset:
-                useHostPort: true
-              config:
-                use-forwarded-headers: "true"
-              service:
-                type: NodePort
+                useHostNetwork: true
+                useHostPort: false
+              containerPort:
+                http: 80
+                https: 443
+              dnsPolicy: ClusterFirstWithHostNet
+              ingressClassResource:
+                name: haproxy
+                default: true
       destination:
-        name: '{{cluster}}'
+        name: "{{clusterName}}"
         namespace: haproxy-controller
       syncPolicy:
-        automated: {prune: true, selfHeal: true}
+        automated: { prune: true, selfHeal: true }
         syncOptions: [CreateNamespace=true]
