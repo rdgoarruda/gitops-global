@@ -35,7 +35,7 @@ spec:
                 - host: "headlamp-{{clusterName}}.local"
                   paths:
                     - path: /
-                      pathType: Prefix
+                      type: Prefix
             serviceAccount:
               create: true
             clusterRoleBinding:
