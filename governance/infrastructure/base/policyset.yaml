@@ -4,5 +4,4 @@ metadata:
   name: infrastructure
 spec:
   description: "Infraestrutura base aplicada a todos os clusters workers"
-  policies:
-    - policy-haproxy-ingress
+  policies: []

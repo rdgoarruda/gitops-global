@@ -6,4 +6,3 @@ commonLabels:
 
 resources:
   - policyset.yaml
-  - policy-haproxy.yaml
