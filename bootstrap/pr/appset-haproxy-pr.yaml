@@ -31,10 +31,7 @@ spec:
               kind: DaemonSet
               daemonset:
                 useHostNetwork: true
-                useHostPort: true
-                hostPorts:
-                  http: 80
-                  https: 443
+                useHostPort: false
               containerPort:
                 http: 80
                 https: 443
