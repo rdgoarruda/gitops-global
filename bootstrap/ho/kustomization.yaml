@@ -3,7 +3,4 @@ kind: Kustomization
 
 resources:
   - app-ocm-config.yaml
-  - placement-infra-ho.yaml
   - appset-governance.yaml
-  - appset-haproxy-ho.yaml
-  - appset-headlamp-ho.yaml

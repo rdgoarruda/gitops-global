@@ -8,3 +8,5 @@ resources:
   - policyset.yaml
   - policy-no-privileged-pods.yaml
   - policy-restrict-clusteradmin.yaml
+  - policy-headlamp-ingress.yaml
+  - policy-haproxy.yaml

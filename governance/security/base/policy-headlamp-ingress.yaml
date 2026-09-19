@@ -1,0 +1,41 @@
+# Garante que o Ingress do Headlamp existe em cada cluster worker
+# O hostname é gerado dinamicamente a partir do nome do cluster registrado no OCM
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: policy-headlamp-ingress
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: policy-headlamp-ingress
+        spec:
+          remediationAction: enforce
+          severity: low
+          object-templates-raw: |
+            {{- $clusterName := (lookup "v1" "ConfigMap" "open-cluster-management-agent" "hub-kubeconfig-secret").data.clusterName | default .ManagedClusterName }}
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: networking.k8s.io/v1
+                kind: Ingress
+                metadata:
+                  name: headlamp-ingress
+                  namespace: headlamp
+                  annotations:
+                    kubernetes.io/ingress.class: haproxy
+                spec:
+                  rules:
+                    - host: headlamp-{{ $clusterName }}.local
+                      http:
+                        paths:
+                          - path: /
+                            pathType: Prefix
+                            backend:
+                              service:
+                                name: headlamp
+                                port:
+                                  number: 80
