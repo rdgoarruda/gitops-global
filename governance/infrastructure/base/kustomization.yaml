@@ -6,5 +6,4 @@ commonLabels:
 
 resources:
   - policyset.yaml
-  - policy-headlamp-ingress.yaml
   - policy-haproxy.yaml

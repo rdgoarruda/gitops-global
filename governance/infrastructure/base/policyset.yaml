@@ -5,5 +5,4 @@ metadata:
 spec:
   description: "Infraestrutura base aplicada a todos os clusters workers"
   policies:
-    - policy-headlamp-ingress
     - policy-haproxy-ingress

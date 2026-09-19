@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: headlamp-pr
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  generators:
+    - clusterDecisionResource:
+        configMapRef: acm-placement
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: infra-placement-pr
+        requeueAfterSeconds: 180
+  template:
+    metadata:
+      name: "headlamp-{{clusterName}}"
+      labels:
+        component: headlamp
+        environment: pr
+    spec:
+      project: default
+      source:
+        repoURL: "https://headlamp-k8s.github.io/headlamp"
+        chart: headlamp
+        targetRevision: "0.26.0"
+        helm:
+          values: |
+            ingress:
+              enabled: true
+              annotations:
+                kubernetes.io/ingress.class: haproxy
+              hosts:
+                - host: "headlamp-{{clusterName}}.local"
+                  paths:
+                    - path: /
+                      pathType: Prefix
+            serviceAccount:
+              create: true
+            clusterRoleBinding:
+              create: true
+      destination:
+        name: "{{clusterName}}"
+        namespace: headlamp
+      syncPolicy:
+        automated: { prune: true, selfHeal: true }
+        syncOptions: [CreateNamespace=true]
