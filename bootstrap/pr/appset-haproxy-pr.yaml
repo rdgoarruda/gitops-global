@@ -36,8 +36,6 @@ spec:
                 http: 80
                 https: 443
               dnsPolicy: ClusterFirstWithHostNet
-              service:
-                enabled: false
               ingressClassResource:
                 name: haproxy
                 default: true
