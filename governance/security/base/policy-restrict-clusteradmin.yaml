@@ -23,7 +23,7 @@ spec:
             {{- $isAllowed := false }}
             {{- if or (hasPrefix "system:" $crb.metadata.name) (eq $crb.metadata.name "cluster-admin") (eq $crb.metadata.name "kubeadm:cluster-admins") }}
               {{- $isAllowed = true }}
-            {{- else if eq $crb.metadata.name (printf "headlamp-%s-admin" .ManagedClusterName) }}
+            {{- else if eq $crb.metadata.name (printf "headlamp-%s-admin" $.ManagedClusterName) }}
               {{- $isAllowed = true }}
               {{- range $subj := $crb.subjects }}
                 {{- if or (ne $subj.kind "ServiceAccount") (ne $subj.namespace "headlamp") (ne $subj.name (printf "headlamp-%s" $.ManagedClusterName)) }}
