@@ -3,8 +3,11 @@
 # Modo: enforce — remove bindings não autorizados
 # Allowlist:
 #   - system:* / cluster-admin / kubeadm:cluster-admins  (sistema)
-#   - headlamp-{clusterName}-admin                        (token manual headlamp por BU)
-#   - headlamp-admin                                      (helm chart headlamp, SA headlamp/headlamp)
+#   - headlamp-*-admin  com SA 'headlamp-*' no ns headlamp (token manual headlamp por BU)
+#   - headlamp-admin    com SA 'headlamp' no ns headlamp    (helm chart headlamp)
+#
+# NOTA: $.ManagedClusterName não está disponível no contexto do managed cluster.
+# Usamos hasPrefix + validação de subject como alternativa portável.
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
@@ -26,20 +29,21 @@ spec:
             {{- $isAllowed := false }}
             {{- if or (hasPrefix "system:" $crb.metadata.name) (eq $crb.metadata.name "cluster-admin") (eq $crb.metadata.name "kubeadm:cluster-admins") }}
               {{- $isAllowed = true }}
-            {{- else if eq $crb.metadata.name (printf "headlamp-%s-admin" $.ManagedClusterName) }}
+            {{- else if eq $crb.metadata.name "headlamp-admin" }}
               {{- $isAllowed = true }}
               {{- range $subj := $crb.subjects }}
-                {{- if or (ne $subj.kind "ServiceAccount") (ne $subj.namespace "headlamp") (ne $subj.name (printf "headlamp-%s" $.ManagedClusterName)) }}
+                {{- if or (ne $subj.kind "ServiceAccount") (ne $subj.namespace "headlamp") (ne $subj.name "headlamp") }}
                   {{- $isAllowed = false }}
                 {{- end }}
               {{- end }}
               {{- if ne (len $crb.subjects) 1 }}
                 {{- $isAllowed = false }}
               {{- end }}
-            {{- else if eq $crb.metadata.name "headlamp-admin" }}
+            {{- else if and (hasPrefix "headlamp-" $crb.metadata.name) (hasSuffix "-admin" $crb.metadata.name) }}
+              {{- $saName := trimSuffix "-admin" $crb.metadata.name }}
               {{- $isAllowed = true }}
               {{- range $subj := $crb.subjects }}
-                {{- if or (ne $subj.kind "ServiceAccount") (ne $subj.namespace "headlamp") (ne $subj.name "headlamp") }}
+                {{- if or (ne $subj.kind "ServiceAccount") (ne $subj.namespace "headlamp") (ne $subj.name $saName) }}
                   {{- $isAllowed = false }}
                 {{- end }}
               {{- end }}
