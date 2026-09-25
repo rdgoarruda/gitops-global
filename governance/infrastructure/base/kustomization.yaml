@@ -6,3 +6,4 @@ commonLabels:
 
 resources:
   - policyset.yaml
+  - policy-psa-restricted.yaml

@@ -4,4 +4,5 @@ metadata:
   name: infrastructure
 spec:
   description: "Infraestrutura base aplicada a todos os clusters workers"
-  policies: []
+  policies:
+   - policy-psa-restricted
