@@ -23,12 +23,29 @@ spec:
               - kube-system
               - open-cluster-management*
               - haproxy-controller
-          object-templates:
+          object-templates-raw: |
+            {{- range $pod := (lookup "v1" "Pod" "" "").items }}
+            {{- $exclude := false }}
+            {{- if or (eq $pod.metadata.namespace "kube-system") (hasPrefix "open-cluster-management" $pod.metadata.namespace) (eq $pod.metadata.namespace "haproxy-controller") }}
+            {{- $exclude = true }}
+            {{- end }}
+            {{- if not $exclude }}
+            {{- $isPrivileged := false }}
+            {{- range $container := $pod.spec.containers }}
+            {{- if $container.securityContext }}
+            {{- if eq $container.securityContext.privileged true }}
+            {{- $isPrivileged = true }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            {{- if $isPrivileged }}
             - complianceType: mustnothave
               objectDefinition:
                 apiVersion: v1
                 kind: Pod
-                spec:
-                  containers:
-                    - securityContext:
-                        privileged: true
+                metadata:
+                  name: {{ $pod.metadata.name }}
+                  namespace: {{ $pod.metadata.namespace }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
