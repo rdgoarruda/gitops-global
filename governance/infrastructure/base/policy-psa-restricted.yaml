@@ -29,4 +29,4 @@ spec:
                 metadata:
                   name: app-financeiro
                   labels:
-                    pod-security.kubernetes.io/warn: restricted
+                    pod-security.kubernetes.io/warn: privileged
