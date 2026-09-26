@@ -7,7 +7,7 @@ metadata:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-6 Configuration Settings
 spec:
-  remediationAction: inform # so detecta o desvio, nao corrige
+  remediationAction: enforce # so detecta o desvio, nao corrige
   disabled: false
   policy-templates:
     - objectDefinition:
@@ -16,7 +16,7 @@ spec:
         metadata:
           name: config-psa-restricted
         spec:
-          remediationAction: inform
+          remediationAction: enforce
           severity: high
           evaluationInterval:
             compliant: "10s"
@@ -29,4 +29,4 @@ spec:
                 metadata:
                   name: app-financeiro
                   labels:
-                    pod-security.kubernetes.io/warn: privileged
+                    pod-security.kubernetes.io/warn: restricted
