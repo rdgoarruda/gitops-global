@@ -7,7 +7,7 @@ metadata:
     policy.open-cluster-management.io/categories: CM Configuration Management
     policy.open-cluster-management.io/controls: CM-6 Configuration Settings
 spec:
-  remediationAction: enforce # so detecta o desvio, nao corrige
+  remediationAction: inform # so detecta o desvio, nao corrige
   disabled: false
   policy-templates:
     - objectDefinition:
@@ -16,7 +16,7 @@ spec:
         metadata:
           name: config-psa-restricted
         spec:
-          remediationAction: enforce
+          remediationAction: inform
           severity: high
           evaluationInterval:
             compliant: "10s"
